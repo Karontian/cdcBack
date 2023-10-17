@@ -28,11 +28,6 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   });
 
 
-
-
-
-
-
 // Define a default route
   app.get('/', (req, res) => {
     // You can send a response or render a view here
@@ -43,11 +38,16 @@ app.get('/test', (req, res) => {
   res.status(200).json({ message: 'Connection to MongoDB is successful!' });
 });
 
-// Add a new route to fetch data from the database
+//get all loads
 app.get('/loads', async (req, res) => {
   try {
-    // Fetch data from the 'Import' collection in your MongoDB
-    const searchResults = await Import.find();
+    const { equipment } = req.query;
+
+    // Build a query object to filter by equipment if it's provided
+    const query = equipment ? { equipment } : {};
+
+    // Fetch data from the 'Import' collection in your MongoDB, applying the filter
+    const searchResults = await Import.find(query);
 
     res.status(200).json(searchResults);
   } catch (error) {
@@ -56,43 +56,9 @@ app.get('/loads', async (req, res) => {
   }
 });
 
-// Add a new route to ADMIN ADD data TO the database
-app.post('/import', async (req, res) => {
-  
-    try {
-      const importData = req.body; // Assuming req.body is an array of import objects
-  
-      // Loop through the array and create Import documents for each object
-      const imports = [];
-  
-      for (const data of importData) {
-        const newImport = new Import({
-          age: data.age,
-          date: new Date(data.date), // Convert date string to Date object
-          equipment: data.equipment,
-          originDH: data.originDH,
-          origin: data.origin,
-          destinationDH: data.destinationDH,
-          destination: data.destination,
-          company: data.company,
-          contact: data.contact,
-          length: data.length,
-          weight: data.weight,
-          rate: data.rate,
-        });
-  
-        imports.push(newImport);
-      }
-  
-      // Save all the Import documents to MongoDB
-      const savedImports = await Import.insertMany(imports);
-  
-      res.status(201).json(savedImports); // Respond with the created data
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  });
+
+//get loads based on equipment
+
  
 //new Search management
 app.get('/newSearch', async (req, res) => {
@@ -183,6 +149,44 @@ app.delete('/newSearch/:id', async (req, res) => {
 });
 
 //ADMIN ROUTES//
+
+// Add a new route to ADMIN ADD data TO the database
+app.post('/import', async (req, res) => {
+  
+  try {
+    const importData = req.body; // Assuming req.body is an array of import objects
+
+    // Loop through the array and create Import documents for each object
+    const imports = [];
+
+    for (const data of importData) {
+      const newImport = new Import({
+        age: data.age,
+        date: new Date(data.date), // Convert date string to Date object
+        equipment: data.equipment,
+        originDH: data.originDH,
+        origin: data.origin,
+        destinationDH: data.destinationDH,
+        destination: data.destination,
+        company: data.company,
+        contact: data.contact,
+        length: data.length,
+        weight: data.weight,
+        rate: data.rate,
+      });
+
+      imports.push(newImport);
+    }
+
+    // Save all the Import documents to MongoDB
+    const savedImports = await Import.insertMany(imports);
+
+    res.status(201).json(savedImports); // Respond with the created data
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
  //ADMIN bulk delete of searches
 app.delete('/newSearchDelete', async (req, res) => {

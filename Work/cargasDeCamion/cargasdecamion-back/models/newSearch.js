@@ -15,7 +15,7 @@ const mongoose = require('mongoose');
 
 const newSearchSchema = new mongoose.Schema({
     equipment: String,
-    dateRange: Date,
+    dateRange: String,
     origin: String,
     originDH: Number,
     destination: String,
