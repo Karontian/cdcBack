@@ -130,7 +130,6 @@ app.get('/getNewSearchId/:createdAt', async (req, res) => {
   
 });
 
-
 //Delete a search
 app.delete('/newSearch/:id', async (req, res) => {
   try {
