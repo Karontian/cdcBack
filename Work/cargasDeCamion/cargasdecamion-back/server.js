@@ -167,6 +167,7 @@ app.post('/import', async (req, res) => {
         origin: data.origin,
         destinationDH: data.destinationDH,
         destination: data.destination,
+        miles: data.miles,
         company: data.company,
         contact: data.contact,
         length: data.length,

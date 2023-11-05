@@ -8,6 +8,7 @@ const importSchema = new mongoose.Schema({
   origin: String,
   destinationDH: Number,
   destination: String,
+  miles: Number,
   company: String,
   contact: String,
   length: String,
