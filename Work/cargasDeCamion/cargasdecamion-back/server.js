@@ -4,6 +4,10 @@ const mongoose = require('mongoose'); // Add Mongoose
 const Import = require('./models/import');
 const NewSearch = require('./models/newSearch');
 const cors = require('cors');
+// import { axios } from 'axios';
+const axios = require('axios');
+
+const API_KEY = 'AIzaSyDdjMOgYAuUspOfs2tmKbDIGhiLHn2RbGI'
 
 
 // Create an Express.js app
@@ -215,6 +219,25 @@ app.delete('/deleteBulk', async (req, res) => {
     }
   });
 
+  //MILEAGE API CALLS//
+  app.get('/distanceMeter', async (req, res) => {
+    try {
+      const { origin, destination } = req.query;
+      console.log('getDistance called', origin, destination);
+
+      const url = `https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${destination}&origins=${origin}&units=imperial&key=${API_KEY}`;
+      
+      // // Make the API request using node-fetch
+      const response = await axios.get(url);
+      console.log(response.data.rows[0].elements[0]);
+      res.status(200).json({ response: response.data.rows[0].elements[0] });
+    } catch (error) {
+      console.error('Error fetching distance data:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+  
+  
 
 
 // Start the Express.js server
