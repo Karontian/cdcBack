@@ -229,7 +229,7 @@ app.delete('/deleteBulk', async (req, res) => {
       
       // // Make the API request using node-fetch
       const response = await axios.get(url);
-      console.log(response.data.rows[0].elements[0]);
+      // console.log(response.data.rows[0].elements[0]);
       res.status(200).json({ response: response.data.rows[0].elements[0] });
     } catch (error) {
       console.error('Error fetching distance data:', error);
