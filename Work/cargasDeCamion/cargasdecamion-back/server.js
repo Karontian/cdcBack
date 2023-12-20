@@ -45,10 +45,23 @@ app.get('/test', (req, res) => {
 //get all loads
 app.get('/loads', async (req, res) => {
   try {
-    const { equipment } = req.query;
+    const { equipment, startDate, endDate } = req.query;
 
     // Build a query object to filter by equipment if it's provided
-    const query = equipment ? { equipment } : {};
+    // const query = equipment ? { equipment } : {};
+
+    const query = {};
+    if (equipment) query.equipment = equipment;
+    if (startDate || endDate) {
+      query.date = {};
+      if (startDate) query.date.$gte = new Date(startDate);
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setDate(end.getDate() + 1);
+        end.setMilliseconds(end.getMilliseconds() - 1);
+        query.date.$lte = end;
+      }
+    }
 
     // Fetch data from the 'Import' collection in your MongoDB, applying the filter
     const searchResults = await Import.find(query);
@@ -223,7 +236,7 @@ app.delete('/deleteBulk', async (req, res) => {
   app.get('/distanceMeter', async (req, res) => {
     try {
       const { origin, destination } = req.query;
-      console.log('getDistance called', origin, destination);
+      // console.log('getDistance called', origin, destination);
 
       const url = `https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${destination}&origins=${origin}&units=imperial&key=${API_KEY}`;
       
